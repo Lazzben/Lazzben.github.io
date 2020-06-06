@@ -35,7 +35,7 @@
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="http://example.org/posts/" />
-<meta property="og:updated_time" content="2020-06-05T20:56:35+08:00" />
+<meta property="og:updated_time" content="2020-06-06T19:59:59+08:00" />
 <meta itemprop="name" content="Posts">
 <meta itemprop="description" content=""><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Posts"/>
@@ -96,6 +96,27 @@
   <article class="pa3 pa4-ns nested-copy-line-height nested-img">
     <section class="cf ph3 ph5-l pv3 pv4-l f4 tc-l center measure-wide lh-copy mid-gray"></section>
     <section class="flex-ns flex-wrap justify-around mt5">
+      
+        <div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
+  <div class="bg-white mb3 pa4 gray overflow-hidden">
+    <span class="f6 db">Posts</span>
+    <h1 class="f3 near-black">
+      <a href="http://example.org/posts/java-dependency-management-and-maven/" class="link black dim">
+        Java 包管理与 Maven
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      包   JVM的⼯工作被设计地相当简单：
+ 执⾏一个类的字节码。 假如这个过程中碰到了新的类，加载它。    类的全限定类名（目录层级）唯一确定了一个类。
+  包就是把许多类放在一起打的压缩包。
+  当多个同名类出现在一个 Classpath 中时，麻烦开始了。
+  包管理   What
+ 包管理的本质就是告诉 JVM 如何找到所需的第三方类库。 成功地解决其中的冲突问题。    How
+ ⼿动写命令进行编译运⾏ Apache Ant Maven    Maven  首先 Maven 不仅仅是包管理工具，但这里只讨论其包管理能力。 Maven 会有中央仓库和本地仓库两个仓库：  本地仓库默认位于~/.m2目录中，里面会放置一些经过下载的第三方包的缓存。 中央仓库一个包会含有 groupId 、 artifactId 、 version 三个字段，在中央仓库中，一个包存放的路径也是以这三个字段来存放的，具体会存放在 groupId/artifactId/version 这个位置。   在 pom.xml 中添加包的信息，Maven 就会自动帮你下载这些包以及其相关依赖包到本地中缓存起来。  Maven 如何解决冲突  常见冲突报错：  AbstractMethodError NoClassDefFoundError ClassNotFoundException LinkageError   方法 1 是 Maven 默认解决方式为。  原则：最近的胜出   方法 2 手动忽略最近的包，可由以下代码实现。 &lt;dependency&gt; &lt;groupId&gt;xxx&lt;/groupId&gt; &lt;artifactId&gt;xxx&lt;/artifactId&gt; &lt;version&gt;1.
+    </div>
+  </div>
+</div>
+</div>
       
         <div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
   <div class="bg-white mb3 pa4 gray overflow-hidden">

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Java 包管理与 Maven | 小黄的博客</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="generator" content="Hugo 0.72.0" />
+    
+    
+      <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    
+
+    
+    
+      <link href="/dist/css/app.4fc0b62e4b82c997bb0041217cd6b979.css" rel="stylesheet">
+    
+
+    
+
+    
+      
+
+    
+
+    
+    
+    <meta property="og:title" content="Java 包管理与 Maven" />
+<meta property="og:description" content="包   JVM的⼯工作被设计地相当简单：
+ 执⾏一个类的字节码。 假如这个过程中碰到了新的类，加载它。    类的全限定类名（目录层级）唯一确定了一个类。
+  包就是把许多类放在一起打的压缩包。
+  当多个同名类出现在一个 Classpath 中时，麻烦开始了。
+  包管理   What
+ 包管理的本质就是告诉 JVM 如何找到所需的第三方类库。 成功地解决其中的冲突问题。    How
+ ⼿动写命令进行编译运⾏ Apache Ant Maven    Maven  首先 Maven 不仅仅是包管理工具，但这里只讨论其包管理能力。 Maven 会有中央仓库和本地仓库两个仓库：  本地仓库默认位于~/.m2目录中，里面会放置一些经过下载的第三方包的缓存。 中央仓库一个包会含有 groupId 、 artifactId 、 version 三个字段，在中央仓库中，一个包存放的路径也是以这三个字段来存放的，具体会存放在 groupId/artifactId/version 这个位置。   在 pom.xml 中添加包的信息，Maven 就会自动帮你下载这些包以及其相关依赖包到本地中缓存起来。  Maven 如何解决冲突  常见冲突报错：  AbstractMethodError NoClassDefFoundError ClassNotFoundException LinkageError   方法 1 是 Maven 默认解决方式为。  原则：最近的胜出   方法 2 手动忽略最近的包，可由以下代码实现。 &lt;dependency&gt; &lt;groupId&gt;xxx&lt;/groupId&gt; &lt;artifactId&gt;xxx&lt;/artifactId&gt; &lt;version&gt;1." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/java-dependency-management-and-maven/" />
+<meta property="article:published_time" content="2020-06-06T19:59:59+08:00" />
+<meta property="article:modified_time" content="2020-06-06T19:59:59+08:00" />
+<meta itemprop="name" content="Java 包管理与 Maven">
+<meta itemprop="description" content="包   JVM的⼯工作被设计地相当简单：
+ 执⾏一个类的字节码。 假如这个过程中碰到了新的类，加载它。    类的全限定类名（目录层级）唯一确定了一个类。
+  包就是把许多类放在一起打的压缩包。
+  当多个同名类出现在一个 Classpath 中时，麻烦开始了。
+  包管理   What
+ 包管理的本质就是告诉 JVM 如何找到所需的第三方类库。 成功地解决其中的冲突问题。    How
+ ⼿动写命令进行编译运⾏ Apache Ant Maven    Maven  首先 Maven 不仅仅是包管理工具，但这里只讨论其包管理能力。 Maven 会有中央仓库和本地仓库两个仓库：  本地仓库默认位于~/.m2目录中，里面会放置一些经过下载的第三方包的缓存。 中央仓库一个包会含有 groupId 、 artifactId 、 version 三个字段，在中央仓库中，一个包存放的路径也是以这三个字段来存放的，具体会存放在 groupId/artifactId/version 这个位置。   在 pom.xml 中添加包的信息，Maven 就会自动帮你下载这些包以及其相关依赖包到本地中缓存起来。  Maven 如何解决冲突  常见冲突报错：  AbstractMethodError NoClassDefFoundError ClassNotFoundException LinkageError   方法 1 是 Maven 默认解决方式为。  原则：最近的胜出   方法 2 手动忽略最近的包，可由以下代码实现。 &lt;dependency&gt; &lt;groupId&gt;xxx&lt;/groupId&gt; &lt;artifactId&gt;xxx&lt;/artifactId&gt; &lt;version&gt;1.">
+<meta itemprop="datePublished" content="2020-06-06T19:59:59&#43;08:00" />
+<meta itemprop="dateModified" content="2020-06-06T19:59:59&#43;08:00" />
+<meta itemprop="wordCount" content="81">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Java 包管理与 Maven"/>
+<meta name="twitter:description" content="包   JVM的⼯工作被设计地相当简单：
+ 执⾏一个类的字节码。 假如这个过程中碰到了新的类，加载它。    类的全限定类名（目录层级）唯一确定了一个类。
+  包就是把许多类放在一起打的压缩包。
+  当多个同名类出现在一个 Classpath 中时，麻烦开始了。
+  包管理   What
+ 包管理的本质就是告诉 JVM 如何找到所需的第三方类库。 成功地解决其中的冲突问题。    How
+ ⼿动写命令进行编译运⾏ Apache Ant Maven    Maven  首先 Maven 不仅仅是包管理工具，但这里只讨论其包管理能力。 Maven 会有中央仓库和本地仓库两个仓库：  本地仓库默认位于~/.m2目录中，里面会放置一些经过下载的第三方包的缓存。 中央仓库一个包会含有 groupId 、 artifactId 、 version 三个字段，在中央仓库中，一个包存放的路径也是以这三个字段来存放的，具体会存放在 groupId/artifactId/version 这个位置。   在 pom.xml 中添加包的信息，Maven 就会自动帮你下载这些包以及其相关依赖包到本地中缓存起来。  Maven 如何解决冲突  常见冲突报错：  AbstractMethodError NoClassDefFoundError ClassNotFoundException LinkageError   方法 1 是 Maven 默认解决方式为。  原则：最近的胜出   方法 2 手动忽略最近的包，可由以下代码实现。 &lt;dependency&gt; &lt;groupId&gt;xxx&lt;/groupId&gt; &lt;artifactId&gt;xxx&lt;/artifactId&gt; &lt;version&gt;1."/>
+
+	
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="/" class="f3 fw2 hover-white no-underline white-90 dib">
+      
+        小黄的博客
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked">
+          
+        POSTS
+      </aside>
+      
+
+
+
+
+  <div id="sharing" class="mt3">
+
+    
+    <a href="https://www.facebook.com/sharer.php?u=http://example.org/posts/java-dependency-management-and-maven/" class="facebook no-underline" aria-label="share on Facebook">
+      <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M28.765,50.32h6.744V33.998h4.499l0.596-5.624h-5.095  l0.007-2.816c0-1.466,0.14-2.253,2.244-2.253h2.812V17.68h-4.5c-5.405,0-7.307,2.729-7.307,7.317v3.377h-3.369v5.625h3.369V50.32z   M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+
+    </a>
+
+    
+    
+    <a href="https://twitter.com/share?url=http://example.org/posts/java-dependency-management-and-maven/&amp;text=Java%20%e5%8c%85%e7%ae%a1%e7%90%86%e4%b8%8e%20Maven" class="twitter no-underline" aria-label="share on Twitter">
+      <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+    </a>
+
+    
+    <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http://example.org/posts/java-dependency-management-and-maven/&amp;title=Java%20%e5%8c%85%e7%ae%a1%e7%90%86%e4%b8%8e%20Maven" class="linkedin no-underline" aria-label="share on LinkedIn">
+      <svg  height="32px"  style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+
+    </a>
+  </div>
+
+
+      <h1 class="f1 athelas mt3 mb1">Java 包管理与 Maven</h1>
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2020-06-06T19:59:59&#43;08:00">June 6, 2020</time>
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><h2 id="包">包</h2>
+<ul>
+<li>
+<p>JVM的⼯工作被设计地相当简单：</p>
+<ul>
+<li>执⾏一个类的字节码。</li>
+<li>假如这个过程中碰到了新的类，加载它。</li>
+</ul>
+</li>
+<li>
+<p>类的全限定类名（目录层级）唯一确定了一个类。</p>
+</li>
+<li>
+<p>包就是把许多类放在一起打的压缩包。</p>
+</li>
+<li>
+<p>当多个同名类出现在一个 Classpath 中时，麻烦开始了。</p>
+</li>
+</ul>
+<h2 id="包管理">包管理</h2>
+<ul>
+<li>
+<p>What</p>
+<ul>
+<li>包管理的本质就是告诉 JVM 如何找到所需的第三方类库。</li>
+<li>成功地解决其中的冲突问题。</li>
+</ul>
+</li>
+<li>
+<p>How</p>
+<ul>
+<li>⼿动写命令进行编译运⾏</li>
+<li>Apache Ant</li>
+<li>Maven</li>
+</ul>
+</li>
+</ul>
+<h2 id="maven">Maven</h2>
+<ul>
+<li>首先 Maven 不仅仅是包管理工具，但这里只讨论其包管理能力。</li>
+<li>Maven 会有中央仓库和本地仓库两个仓库：
+<ul>
+<li>本地仓库默认位于~/.m2目录中，里面会放置一些经过下载的第三方包的缓存。</li>
+<li>中央仓库一个包会含有 <code>groupId</code> 、 <code>artifactId</code> 、 <code>version</code> 三个字段，在中央仓库中，一个包存放的路径也是以这三个字段来存放的，具体会存放在 <code>groupId/artifactId/version</code> 这个位置。</li>
+</ul>
+</li>
+<li>在 <code>pom.xml</code> 中添加包的信息，Maven 就会自动帮你下载这些包以及其相关依赖包到本地中缓存起来。</li>
+</ul>
+<h2 id="maven-如何解决冲突">Maven 如何解决冲突</h2>
+<p><img src="https://i.loli.net/2020/06/06/XDsSC8oYQgwO5lJ.jpg" alt="包冲突.jpg"></p>
+<ul>
+<li>常见冲突报错：
+<ul>
+<li>AbstractMethodError</li>
+<li>NoClassDefFoundError</li>
+<li>ClassNotFoundException</li>
+<li>LinkageError</li>
+</ul>
+</li>
+<li>方法 1 是 Maven 默认解决方式为。
+<ul>
+<li>原则：最近的胜出</li>
+</ul>
+</li>
+<li>方法 2 手动忽略最近的包，可由以下代码实现。
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;dependency&gt;</span>
+  <span style="color:#f92672">&lt;groupId&gt;</span>xxx<span style="color:#f92672">&lt;/groupId&gt;</span>
+  <span style="color:#f92672">&lt;artifactId&gt;</span>xxx<span style="color:#f92672">&lt;/artifactId&gt;</span>
+  <span style="color:#f92672">&lt;version&gt;</span>1.0.0<span style="color:#f92672">&lt;/version&gt;</span>
+  <span style="color:#f92672">&lt;exclusions&gt;</span>
+    <span style="color:#f92672">&lt;exclusion&gt;</span>
+        <span style="color:#f92672">&lt;groupId&gt;</span>yyy<span style="color:#f92672">&lt;/groupId&gt;</span>
+      <span style="color:#f92672">&lt;artifactId&gt;</span>yyy<span style="color:#f92672">&lt;/artifactId&gt;</span>
+    <span style="color:#f92672">&lt;/exclusion&gt;</span>
+  <span style="color:#f92672">&lt;/exclusions&gt;</span>
+<span style="color:#f92672">&lt;/dependency&gt;</span>
+</code></pre></div></li>
+<li>方法 3 则手动创建了最近的包。</li>
+<li>使用 <code>Maven Helper</code> 插件，帮助解决冲突。</li>
+<li><code>pom.xml</code> 文件中，可以通过设置 <code>scope</code> 标签，来指定一个包是否可以被生产代码和测试代码所引用：
+<ul>
+<li><code>complie</code>（生产代码以及测试代码均可见）</li>
+<li><code>test</code>（只有测试代码可见）</li>
+<li><code>provided</code>（只在编译的生产代码的时候生效，在运行时无效）</li>
+</ul>
+</li>
+</ul>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="http://example.org/" >
+    &copy;  小黄的博客 2020 
+  </a>
+    <div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+  </div>
+</footer>
+
+    
+
+  <script src="/dist/js/app.3fc0f988d21662902933.js"></script>
+
+
+  </body>
+</html>
